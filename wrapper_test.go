@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"cloud.google.com/go/pubsub"
+	"github.com/Ashenafi-Tesfaye/gcppubsubwrapper/internal/pubsub"
 	"cloud.google.com/go/pubsub/pstest"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc"

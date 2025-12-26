@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"cloud.google.com/go/pubsub"
+	"github.com/Ashenafi-Tesfaye/gcppubsubwrapper/internal/pubsub"
 )
 
 type PubSubClient struct {
