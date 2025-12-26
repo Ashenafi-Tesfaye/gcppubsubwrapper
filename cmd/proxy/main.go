@@ -2,25 +2,26 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/Ashenafi-Tesfaye/dependency-wrapper/internal/gcp"
 	"github.com/Ashenafi-Tesfaye/dependency-wrapper/internal/server"
 )
 
 func main() {
-	projectID := os.Getenv("GCP_PROJECT_ID")
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	projectID := flag.String("project", "", "GCP Project ID (required)")
+	port := flag.String("port", "8080", "Port to run the proxy on")
+	flag.Parse()
+	if *projectID == "" {
+		log.Fatal("--project flag (GCP Project ID) is required")
 	}
 
 	ctx := context.Background()
 
 	// 1. Initialize Dependencies
-	psManager, err := gcp.NewPubSubManager(ctx, projectID)
+	psManager, err := gcp.NewPubSubManager(ctx, *projectID)
 	if err != nil {
 		log.Fatalf("Failed to init PubSub: %v", err)
 	}
@@ -34,8 +35,8 @@ func main() {
 	server.RegisterRoutes(mux, srv)
 
 	// 4. Start
-	log.Printf("Starting modular proxy on :%s", port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	log.Printf("Starting modular proxy on :%s", *port)
+	if err := http.ListenAndServe(":"+*port, mux); err != nil {
 		log.Fatal(err)
 	}
 }

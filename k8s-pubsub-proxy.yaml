@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pubsub-proxy
+  labels:
+    app: pubsub-proxy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pubsub-proxy
+  template:
+    metadata:
+      labels:
+        app: pubsub-proxy
+    spec:
+      containers:
+        - name: pubsub-proxy
+          image: pubsub-proxy:latest
+          imagePullPolicy: IfNotPresent
+          args: ["--project=<YOUR_GCP_PROJECT_ID>", "--port=8080"]
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pubsub-proxy
+spec:
+  selector:
+    app: pubsub-proxy
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

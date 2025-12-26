@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  pubsub-proxy:
+    build: .
+    image: pubsub-proxy:latest
+    ports:
+      - "8080:8080"
+    command: ["/root/proxy", "--project=<YOUR_GCP_PROJECT_ID>", "--port=8080"]
+    restart: unless-stopped
+    environment:
+      # Add any other environment variables here if needed
+      # EXAMPLE_ENV: value
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+      restart_policy:
+        condition: on-failure

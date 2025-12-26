@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"pubsub-proxy/internal/gcp" // Adjust to your module path
+	"github.com/Ashenafi-Tesfaye/dependency-wrapper/internal/gcp"
 )
 
 type Server struct {
